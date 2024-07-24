@@ -7,8 +7,7 @@ import gift.jwtutil.JwtUtil;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,9 @@ public class LoginController {
 
     @Autowired
     private AuthService authService;
-    private final JwtUtil jwtUtil;
 
-    public LoginController(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping
     public String loginPage() {
@@ -39,5 +36,4 @@ public class LoginController {
 
         return new ResponseEntity<>(jwtUtil.makeToken(userDTO), HttpStatus.OK);
     }
-
 }
