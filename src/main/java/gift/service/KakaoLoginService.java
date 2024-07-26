@@ -18,13 +18,10 @@ public class KakaoLoginService {
     @Autowired
     private KakaoProperties properties;
 
-    private final String loginUrl = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code&redirect_uri=";
-    private final String tokenUrl = "https://kauth.kakao.com/oauth/token";
-
     private RestTemplate client = new RestTemplateBuilder().build();
 
     public String kakaoLogin() {
-        return loginUrl + properties.redirectUrl()
+        return properties.loginUrl() + properties.redirectUrl()
                 + "&client_id=" + properties.clientId();
     }
 
@@ -38,13 +35,15 @@ public class KakaoLoginService {
         body.add("redirect_uri", properties.redirectUrl());
         body.add("code", authorizationCode);
 
-        var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(tokenUrl));
+        var request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(properties.tokenUrl()));
         var response = client.exchange(request, String.class);
 
-        if (response.getStatusCode().equals(HttpStatus.OK)) {
-            return extractAccessToken(response.getBody());
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            HttpStatus httpStatus = HttpStatus.resolve(response.getStatusCode().value());
+            throw CustomException.invalidAPIException(httpStatus);
         }
-        throw CustomException.invalidAPIException();
+
+        return extractAccessToken(response.getBody());
     }
 
     private String extractAccessToken(String responseBody) {
