@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KakaoLoginController {
     private final KakaoLoginService kakaoLoginService;
 
-    private String accessToken;
-
     public KakaoLoginController(KakaoLoginService kakaoLoginService) {
         this.kakaoLoginService = kakaoLoginService;
     }
@@ -24,16 +22,11 @@ public class KakaoLoginController {
     }
 
     @GetMapping
-    public String kakaoLoginVerify(@RequestParam("code") String authorizationCode) {
-        accessToken = kakaoLoginService.getAccessToken(authorizationCode);
-
-        return "redirect:/kakao/login/success";
-    }
-
-    @GetMapping("login/success")
-    public String kakaoLoginSuccess(Model model) {
+    public String kakaoLoginVerify(@RequestParam("code") String authorizationCode, Model model) {
+        String accessToken = kakaoLoginService.getAccessToken(authorizationCode);
         model.addAttribute("accessToken", accessToken);
 
         return "kakaoLogin";
     }
+
 }
