@@ -1,7 +1,6 @@
 package gift.controller;
 
 import gift.service.KakaoLoginService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/kakao")
 public class KakaoLoginController {
-    @Autowired
-    private KakaoLoginService kakaoLoginService;
+    private final KakaoLoginService kakaoLoginService;
 
     private String accessToken;
+
+    public KakaoLoginController(KakaoLoginService kakaoLoginService) {
+        this.kakaoLoginService = kakaoLoginService;
+    }
 
     @GetMapping("/login")
     public String kakaoLogin() {
