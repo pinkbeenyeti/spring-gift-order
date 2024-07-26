@@ -55,7 +55,7 @@ public class CustomException extends RuntimeException{
         return new CustomException(ErrorMessage.quantityInvalid, HttpStatus.BAD_REQUEST);
     }
 
-    public static CustomException invalidAPIException() {
-        return new CustomException(ErrorMessage.apiInvalid, HttpStatus.UNAUTHORIZED);
+    public static CustomException invalidAPIException(HttpStatus httpStatus) {
+        return new CustomException(ErrorMessage.apiInvalid, httpStatus);
     }
 }
