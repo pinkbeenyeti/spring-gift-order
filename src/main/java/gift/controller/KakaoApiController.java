@@ -4,6 +4,7 @@ import gift.service.KakaoApiService;
 import gift.service.UserService;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -23,10 +24,11 @@ public class KakaoApiController {
     }
 
     @GetMapping
-    public String kakaoLoginVerify(@RequestParam("code") String authorizationCode) {
+    public String kakaoLoginVerify(@RequestParam("code") String authorizationCode, Model model) {
         String accessToken = kakaoApiService.getAccessToken(authorizationCode);
         String email = kakaoApiService.getEmailFromToken(accessToken);
         userService.kakaoSign(email);
+        model.addAttribute("accessToken", accessToken);
 
         return "kakaoLoginSuccess";
     }
