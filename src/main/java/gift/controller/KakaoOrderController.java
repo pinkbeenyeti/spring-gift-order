@@ -16,13 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/kakao/wishes")
-public class KakaoWishController {
+@RequestMapping("/kakao/wish")
+public class KakaoOrderController {
     private final WishService wishService;
     private final OptionService optionService;
     private final KakaoApiService kakaoApiService;
 
-    public KakaoWishController(WishService wishService, OptionService optionService, KakaoApiService kakaoApiService) {
+    public KakaoOrderController(WishService wishService, OptionService optionService, KakaoApiService kakaoApiService) {
         this.wishService = wishService;
         this.kakaoApiService = kakaoApiService;
         this.optionService = optionService;
@@ -36,7 +36,16 @@ public class KakaoWishController {
         return "kakaoWishlist";
     }
 
-    @GetMapping("/addWishOption")
+    @PostMapping("/order")
+    public ResponseEntity<Void> handleKakaoOrder(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody OrderRequestDTO orderRequestDTO) {
+        optionService.subtractOptionQuantity(orderRequestDTO.optionId(), orderRequestDTO.quantity());
+        wishService.deleteWishOption(kakaoUserDTO.user().getId(), orderRequestDTO.optionId());
+        kakaoApiService.sendMessage(kakaoUserDTO.accessToken(), orderRequestDTO);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/addWish")
     public String addWishOptionPage(@KakaoUser KakaoUserDTO kakaoUserDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         OptionsPageResponseDTO options = optionService.getAllOptions(pageable);
         model.addAttribute("options", options);
@@ -44,17 +53,11 @@ public class KakaoWishController {
         return "addKakaoWishOption"; // addWishProduct.html로 이동
     }
 
-    @PostMapping("/addWishOption")
+    @PostMapping("/addWish")
     public ResponseEntity<String> addWishOption(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody WishRequestDTO wishRequestDTO, Model model) {
         wishService.addWishOption(kakaoUserDTO.user().getId(), wishRequestDTO);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
-
-    @PostMapping("/send/message")
-    public ResponseEntity<Void> sendMessage(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody OrderRequestDTO orderRequestDTO) {
-        kakaoApiService.sendMessage(kakaoUserDTO.accessToken(), orderRequestDTO);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
