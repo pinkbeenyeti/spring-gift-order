@@ -7,7 +7,7 @@ document.getElementById('select-all').addEventListener('change', function(e) {
 });
 
 document.getElementById('add-wish-option').addEventListener('click', function(event) {
-    fetch(`/kakao/wishes/addWishOption`, {
+    fetch(`/kakao/wish/addWish`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ document.querySelectorAll('.send-btn').forEach(button => {
 function deleteCheckedProduct(temp) {
     const data = {optionId: temp};
     console.log(data);
-    fetch(`/kakao/wishes`, {
+    fetch(`/kakao/wish`, {
         method: 'DELETE',
         body: JSON.stringify(data),
         headers: {
@@ -90,7 +90,7 @@ function sendMessage(optionId, optionName) {
             'quantity': 1000,
             'message': `Your order success, name: ${optionName}`
     };
-    fetch(`/kakao/wishes/send/message`, {
+    fetch(`/kakao/wish/order`, {
         method: 'POST',
         body: JSON.stringify(data), // JSON 문자열로 변환
         headers: {
@@ -114,7 +114,7 @@ function sendMessage(optionId, optionName) {
 }
 
 function loadPage(pageNum) {
-    fetch(`/kakao/wishes?page=${pageNum}`, {
+    fetch(`/kakao/wish?page=${pageNum}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

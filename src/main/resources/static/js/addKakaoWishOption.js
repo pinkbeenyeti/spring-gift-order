@@ -21,7 +21,7 @@ document.getElementById('add-wish-btn').addEventListener('click', function(event
 function addWishProduct(temp) {
     const data = {optionId: temp};
     console.log(data);
-    fetch(`/kakao/wishes/addWishOption`, {
+    fetch(`/kakao/wish/addWish`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -41,7 +41,7 @@ function addWishProduct(temp) {
 }
 
 function returnWishProduct() {
-    fetch(`/kakao/wishes`, {
+    fetch(`/kakao/wish`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ function returnWishProduct() {
 }
 
 function loadPage(pageNum) {
-    fetch(`/kakao/wishes/addWishOption?page=${pageNum}`, {
+    fetch(`/kakao/wish/addWish?page=${pageNum}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

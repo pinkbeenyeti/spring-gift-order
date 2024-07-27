@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var token = tokenDisplayElement.innerText;
     localStorage.setItem('access_token', token);
 
-    fetch(`/kakao/wishes`, {
+    fetch(`/kakao/wish`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
