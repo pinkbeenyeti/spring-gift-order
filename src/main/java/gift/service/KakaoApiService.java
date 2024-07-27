@@ -69,8 +69,6 @@ public class KakaoApiService {
     }
 
     public void sendMessage(String accessToken, OrderRequestDTO orderRequestDTO) {
-        optionService.subtractOptionQuantity(orderRequestDTO.optionId(), orderRequestDTO.quantity());
-
         var headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
