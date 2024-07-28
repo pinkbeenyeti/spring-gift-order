@@ -2,11 +2,11 @@ package gift.controller;
 
 import gift.annotation.KakaoUser;
 import gift.dto.*;
-
 import gift.service.KakaoApiService;
 import gift.service.OptionService;
 import gift.service.WishService;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/kakao/wish")
+@Tag(name = "Kakao Wish API", description = "카카오 위시리스트 및 주문 관련 API")
 public class KakaoOrderController {
     private final WishService wishService;
     private final OptionService optionService;
@@ -29,6 +30,7 @@ public class KakaoOrderController {
     }
 
     @GetMapping
+    @Operation(summary = "위시리스트 조회")
     public String getKakaoWishes(@KakaoUser KakaoUserDTO kakaoUserDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         WishPageResponseDTO wishOptions = wishService.getWishlist(kakaoUserDTO.user().getId(), pageable);
         model.addAttribute("wishOptions", wishOptions);
@@ -37,6 +39,7 @@ public class KakaoOrderController {
     }
 
     @PostMapping("/order")
+    @Operation(summary = "주문 생성", description = "옵션 수량 차감, 위시리스트에서 삭제, 메시지 전송")
     public ResponseEntity<Void> handleKakaoOrder(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody OrderRequestDTO orderRequestDTO) {
         optionService.subtractOptionQuantity(orderRequestDTO.optionId(), orderRequestDTO.quantity());
         wishService.deleteWishOption(kakaoUserDTO.user().getId(), orderRequestDTO.optionId());
@@ -46,6 +49,7 @@ public class KakaoOrderController {
     }
 
     @GetMapping("/addWish")
+    @Operation(summary = "위시리스트에 옵션 추가 페이지")
     public String addWishOptionPage(@KakaoUser KakaoUserDTO kakaoUserDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         OptionsPageResponseDTO options = optionService.getAllOptions(pageable);
         model.addAttribute("options", options);
@@ -54,6 +58,7 @@ public class KakaoOrderController {
     }
 
     @PostMapping("/addWish")
+    @Operation(summary = "위시리스트에 옵션 추가")
     public ResponseEntity<String> addWishOption(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody WishRequestDTO wishRequestDTO, Model model) {
         wishService.addWishOption(kakaoUserDTO.user().getId(), wishRequestDTO);
 
@@ -61,6 +66,7 @@ public class KakaoOrderController {
     }
 
     @DeleteMapping
+    @Operation(summary = "위시리스트에서 옵션 삭제")
     public String deleteWishOption(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody WishRequestDTO wishRequestDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         wishService.deleteWishOption(kakaoUserDTO.user().getId(), wishRequestDTO.optionId());
 
