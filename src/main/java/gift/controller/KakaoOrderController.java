@@ -6,6 +6,7 @@ import gift.service.KakaoApiService;
 import gift.service.OptionService;
 import gift.service.WishService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +31,12 @@ public class KakaoOrderController {
     }
 
     @GetMapping
-    @Operation(summary = "위시리스트 조회")
+    @Operation(summary = "위시리스트 조회",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "위시리스트 조회 성공"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public String getKakaoWishes(@KakaoUser KakaoUserDTO kakaoUserDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         WishPageResponseDTO wishOptions = wishService.getWishlist(kakaoUserDTO.user().getId(), pageable);
         model.addAttribute("wishOptions", wishOptions);
@@ -39,7 +45,14 @@ public class KakaoOrderController {
     }
 
     @PostMapping("/order")
-    @Operation(summary = "주문 생성", description = "옵션 수량 차감, 위시리스트에서 삭제, 메시지 전송")
+    @Operation(summary = "주문 생성",
+            description = "옵션 수량 차감, 위시리스트에서 삭제, 메시지 전송",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "주문 생성 성공"),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public ResponseEntity<Void> handleKakaoOrder(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody OrderRequestDTO orderRequestDTO) {
         optionService.subtractOptionQuantity(orderRequestDTO.optionId(), orderRequestDTO.quantity());
         wishService.deleteWishOption(kakaoUserDTO.user().getId(), orderRequestDTO.optionId());
@@ -49,7 +62,12 @@ public class KakaoOrderController {
     }
 
     @GetMapping("/addWish")
-    @Operation(summary = "위시리스트에 옵션 추가 페이지")
+    @Operation(summary = "위시리스트에 옵션 추가 페이지",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "옵션 추가 페이지 로드 성공"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public String addWishOptionPage(@KakaoUser KakaoUserDTO kakaoUserDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         OptionsPageResponseDTO options = optionService.getAllOptions(pageable);
         model.addAttribute("options", options);
@@ -58,7 +76,13 @@ public class KakaoOrderController {
     }
 
     @PostMapping("/addWish")
-    @Operation(summary = "위시리스트에 옵션 추가")
+    @Operation(summary = "위시리스트에 옵션 추가",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "옵션 추가 성공"),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public ResponseEntity<String> addWishOption(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody WishRequestDTO wishRequestDTO, Model model) {
         wishService.addWishOption(kakaoUserDTO.user().getId(), wishRequestDTO);
 
@@ -66,7 +90,13 @@ public class KakaoOrderController {
     }
 
     @DeleteMapping
-    @Operation(summary = "위시리스트에서 옵션 삭제")
+    @Operation(summary = "위시리스트에서 옵션 삭제",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "옵션 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public String deleteWishOption(@KakaoUser KakaoUserDTO kakaoUserDTO, @RequestBody WishRequestDTO wishRequestDTO, Model model, @PageableDefault(size = 3) Pageable pageable) {
         wishService.deleteWishOption(kakaoUserDTO.user().getId(), wishRequestDTO.optionId());
 
