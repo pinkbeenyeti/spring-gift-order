@@ -36,9 +36,27 @@
 | 엔드포인트               | 응답 예시                                       |
 |--------------------------|------------------------------------------------|
 | /kakao/login             | 302 Found                                       |
-| /kakao                   | 200 OK<br>kakaoLoginSuccess 뷰와 함께 accessToken 포함 |
+| /kakao                   | 200 OK<br>kakaoLoginSuccess 뷰와 함께 accessToken 포함|
 | /kakao/wish              | 200 OK<br>kakaoWishlist 뷰와 함께 wishOptions 포함 |
 | /kakao/wish/order        | 200 OK                                          |
 | /kakao/wish/addWish      | 200 OK<br>"OK" 문자열                           |
 | /kakao/wish              | 200 OK<br>kakaoWishlist 뷰와 함께 wishOptions 포함 |
 
+## 예외 상황
+
+| 엔드포인트               | 예외 상황                     | 응답 코드 |
+|--------------------------|-------------------------------|-----------|
+| /kakao                   | 잘못된 인가 코드              | 400       | 
+| /kakao                   | 인증 실패                     | 401       |
+| /kakao                   | 서버 오류                     | 500       |
+| /kakao/wish              | 인증 실패                     | 401       |
+| /kakao/wish              | 서버 오류                     | 500       | 
+| /kakao/wish/addWish      | 잘못된 요청                   | 400       | 
+| /kakao/wish/addWish      | 인증 실패                     | 401       |
+| /kakao/wish/addWish      | 서버 오류                     | 500       |
+| /kakao/wish              | 잘못된 요청                   | 400       | 
+| /kakao/wish              | 인증 실패                     | 401       |
+| /kakao/wish              | 서버 오류                     | 500       |
+| /kakao/wish/order        | 잘못된 요청                   | 400       | 
+| /kakao/wish/order        | 인증 실패                     | 401       |
+| /kakao/wish/order        | 서버 오류                     | 500       |
